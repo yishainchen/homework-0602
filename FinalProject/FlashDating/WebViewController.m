@@ -9,16 +9,32 @@
 #import "WebViewController.h"
 
 @interface WebViewController ()
-
+{
+    UIActivityIndicatorView *indicatorView;
+}
+@property UIRefreshControl *refershControl;
 @end
 
 @implementation WebViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    indicatorView.center = self.view.center;
+    [self.view addSubview:indicatorView];
+    [indicatorView startAnimating];
     // Do any additional setup after loading the view.
+    self.refershControl = [[UIRefreshControl alloc] init];
+    [self.refershControl addTarget:self action:@selector(loadRequest:) forControlEvents:UIControlEventValueChanged];
+    NSURL *url = [NSURL URLWithString:@"https://www.alphacamp.co/seminars/swift-intro/"];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [self.webView loadRequest:request];
+     [_refershControl endRefreshing];
+    
 }
-
+- (void)viewDidAppear:(BOOL)animated {
+    [indicatorView stopAnimating];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
